@@ -18,9 +18,8 @@ public class GuestbookService {
 		return guestbookDao.getList();
 	}
 
-	public void insert(GuestbookVo vo) {
-		guestbookDao.insert(vo);
-		
+	public boolean insert(GuestbookVo vo) {
+		return guestbookDao.insert(vo);
 	}
 
 	public void delete(Long no, String password) {
@@ -35,6 +34,13 @@ public class GuestbookService {
 	public void modify(GuestbookVo vo) {
 		guestbookDao.modify(vo);
 		
+	}
+
+	public List<GuestbookVo> getAjaxList(Integer page) {
+		return guestbookDao.getAjaxList(page);
+	}
+	public GuestbookVo getListOne() {
+		return guestbookDao.getListOne();
 	}
 	
 	

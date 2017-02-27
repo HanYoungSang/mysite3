@@ -8,7 +8,7 @@
 <head>
 <title>mysite</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<link href="/mysite/assets/css/board.css" rel="stylesheet" type="text/css">
+<link href="${pageContext.request.contextPath}/assets/css/board.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 	<div id="container">
@@ -33,12 +33,12 @@
 					</tr>
 				</table>
 				<div class="bottom">
-					<a href="${pageContext.request.contextPath}/board?pageno=${pageno}">글목록</a>
+					<a href="${pageContext.request.contextPath}/board/${pageno}?kwd=${keyword}">글목록</a>
 					<c:if test="${vo.userNo == authUser.no}">
-						<a href="${pageContext.request.contextPath}/board?a=modifyform&no=${vo.no}&pageno=${pageno}">글수정</a>
+						<a href="${pageContext.request.contextPath}/board/modifyform/${vo.no}?pageno=${pageno}">글수정</a>
 					</c:if>
 					<c:if test="${! empty authUser}">
-						<a href="${pageContext.request.contextPath}/board?a=replyform&no=${vo.no}&pageno=${pageno}">댓글 쓰기</a>
+						<a href="${pageContext.request.contextPath}/board/replyform/${vo.no}?pageno=${pageno}">댓글 쓰기</a>
 					</c:if>
 				</div>
 			</div>

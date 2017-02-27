@@ -17,6 +17,11 @@ public class UserService {
 		return userDao.insert(uservo);
 	}
 
+	public boolean exists(String email) {
+		UserVo userVo = userDao.get(email);
+		return (userVo != null);
+	}
+	
 	public UserVo getUser(String email, String password) {
 
 		UserVo userVo = userDao.get(email, password);
@@ -33,4 +38,6 @@ public class UserService {
 		return userDao.modify(uservo);
 		
 	}
+
+
 }

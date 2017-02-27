@@ -1,14 +1,16 @@
 package com.bit2017.mysite.controller;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bit2017.mysite.dto.JSONResult;
+import com.bit2017.mysite.security.Auth;
+import com.bit2017.mysite.security.AuthUser;
 import com.bit2017.mysite.service.UserService;
 import com.bit2017.mysite.vo.UserVo;
 
@@ -19,14 +21,29 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
+	@ResponseBody
+	@RequestMapping("/checkemail")
+	public JSONResult checkEmail(
+			@RequestParam( value ="email", required=true, defaultValue="")
+			String email
+			){
+		
+		boolean isExists = userService.exists(email);
+		
+		return JSONResult.success(isExists? "exist":"not exist");
+	}
+	
+	
 	@RequestMapping("/joinform")
 	public String joinform(){
 		return "/user/joinform";
 	}
 	@RequestMapping("/join")
 	public String join( @ModelAttribute UserVo uservo){
-		userService.join(uservo);
-		return "redirect:/user/joinsuccess";
+		if( userService.join(uservo) )
+			return "redirect:/user/joinsuccess";
+		else 
+			return "redirect:/user/joinform";
 	}
 	
 	@RequestMapping("/joinsuccess")
@@ -39,30 +56,30 @@ public class UserController {
 		return "/user/loginform";
 	}
 	
-	@RequestMapping("/login")
-	public String login(
-						@RequestParam(value ="email", required=true, defaultValue="") String email,
-						@RequestParam(value ="password", required=true, defaultValue="") String password,
-						HttpSession session){
-		UserVo userVo = userService.getUser( email, password);
-		if( userVo == null ){
-			return "redirect:/user/loginform?result=fail";
-		} 
-		
-		//인증 처리
-		session.setAttribute("authUser",userVo);
-		return "redirect:/main";
-			
-	}
+//	@RequestMapping("/login")
+//	public String login(
+//						@RequestParam(value ="email", required=true, defaultValue="") String email,
+//						@RequestParam(value ="password", required=true, defaultValue="") String password,
+//						HttpSession session){
+//		UserVo userVo = userService.getUser( email, password);
+//		if( userVo == null ){
+//			return "redirect:/user/loginform?result=fail";
+//		} 
+//		
+//		//인증 처리
+//		session.setAttribute("authUser",userVo);
+//		return "redirect:/main";
+//			
+//	}
 	
-	@RequestMapping("/logout")
-	public String logout( HttpSession session ) {
-
-		//인증 해제
-		session.removeAttribute("authUser");
-		session.invalidate();
-		return "redirect:/main";
-	}
+//	@RequestMapping("/logout")
+//	public String logout( HttpSession session ) {
+//
+//		//인증 해제
+//		session.removeAttribute("authUser");
+//		session.invalidate();
+//		return "redirect:/main";
+//	}
 
 	/*
 	@Auth		// 사용자 어노테이션을 생성하면 세선 처리가 자동으로 처리
@@ -71,32 +88,27 @@ public class UserController {
 		return "redirect:/main";
 	}
 */
+	@Auth
 	@RequestMapping("/modifyform")
 	public String modifyform(
-						HttpSession session,
+						@AuthUser
+						UserVo authUser,
 						Model model){
 		
-		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		if (authUser == null) {
-			return "redirect:/main";
-		}
 		UserVo userVo = userService.getUser( authUser.getNo() );
 		model.addAttribute("userVo", userVo);
 		return "/user/modifyform";
 	}		
 	
+	@Auth
 	@RequestMapping("/modify")
-	public String modify( @ModelAttribute UserVo uservo,
-							HttpSession session
+	public String modify( 	@ModelAttribute UserVo uservo,
+							@AuthUser
+							UserVo authUser
 							){
-		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		if (authUser == null) {
-			return "redirect:/main";
-		}
 		
 		if ( userService.modify(uservo) ){
 			authUser.setName(uservo.getName());
-			session.setAttribute( "authUser", authUser );
 		}
 		return "redirect:/user/modifyform";
 	}

@@ -11,7 +11,7 @@ public class BoardVo {
 	private Long oNo;
 	private Long depth;
 	private String regDate;
-	private String userNname;
+	private String userName;
 	private Long userNo;
 	
 	public Long getRn() {
@@ -45,10 +45,10 @@ public class BoardVo {
 		this.regDate = regDate;
 	}
 	public String getUserName() {
-		return userNname;
+		return userName;
 	}
 	public void setUserName(String userNname) {
-		this.userNname = userNname;
+		this.userName = userNname;
 	}
 	public Long getUserNo() {
 		return userNo;
@@ -79,7 +79,7 @@ public class BoardVo {
 		return "BoardVo [rn=" + rn + ", no=" + no + ", title=" + title
 				+ ", content=" + content + ", hit=" + hit + ", gNo=" + gNo
 				+ ", oNo=" + oNo + ", depth=" + depth + ", regDate=" + regDate
-				+ ", userNname=" + userNname + ", userNo=" + userNo + "]";
+				+ ", userNname=" + userName + ", userNo=" + userNo + "]";
 	}
 	public String getContent() {
 		return content;

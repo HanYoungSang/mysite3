@@ -2,8 +2,6 @@ package com.bit2017.mysite.controller;
 
 import java.util.List;
 
-import javax.websocket.server.PathParam;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +9,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.bit2017.mysite.repository.GuestbookDao;
 import com.bit2017.mysite.service.GuestbookService;
 import com.bit2017.mysite.vo.GuestbookVo;
 
@@ -28,6 +25,12 @@ public class GuestbookController {
 		List<GuestbookVo> list = guestbookService.getList();
 		model.addAttribute("list", list);
 		return "/guestbook/list";
+	}
+	
+	@RequestMapping(value={"/list-ajax"} )
+	public String list(){
+
+		return "/guestbook/list-ajax";
 	}
 	
 	@RequestMapping("/insert")

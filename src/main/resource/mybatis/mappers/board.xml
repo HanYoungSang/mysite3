@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board">
+
+	<select id="getList" resultType="boardvo" parameterType="map">
+	<![CDATA[
+	
+	select rn, 
+	       no,
+	       title,
+	       hit,
+	       g_no,
+	       o_no,
+	       depth,
+	       reg_date as regDate,
+	       users_name as userName,
+	       users_no as userNo
+	  from ( 
+			select rownum rn, c.* 
+			from ( select  a.no, a.TITLE, a.HIT, to_char(a.reg_date ,'yyyy-mm-dd hh24:mi:	ss') reg_date,
+					a.g_no, a.o_no, a.depth, 
+					b.NAME as users_name, 
+					b.no as users_no 
+					from board a, users b 
+					where a.USERS_NO = b.NO 
+					]]>
+	<if test="keyword != null or keyword != ''">
+			<![CDATA[
+			          and ( a.title   like '%${keyword }%'
+			             or a.content like '%${keyword }%' )
+			 ]]>
+	</if>
+			<![CDATA[		
+					order by a.G_NO desc, a.O_NO asc ) c ) 
+	 where rn >= (#{pagecount}-1)*#{maxrow}+1 
+	   and rn <= (#{pagecount}*#{maxrow})
+	]]>
+	</select>
+
+	<select id="getTotalByRow" resultType="long" parameterType="map">
+		<![CDATA[
+			select ceil(count(*)/#{maxrow }) as total from board
+			]]>
+		<if test="keyword != null or keyword != ''">
+			 <![CDATA[
+			 where title like '%${keyword }%'
+			    or content like '%${keyword }%'
+			 ]]>
+		</if>
+	</select>
+
+	<select id="select" resultType="boardvo" parameterType="long">
+		<![CDATA[
+			SELECT A.NO, A.TITLE, A.CONTENT, B.NO AS USERNO
+			  FROM BOARD A, USERS B
+			 WHERE A.USERS_NO = B.NO
+			   AND A.NO = #{value }
+		]]>
+	</select>
+
+	<select id="selectall" resultType="boardvo" parameterType="long">
+		<![CDATA[
+			SELECT NO,
+			       TITLE, 
+			       CONTENT, 
+			       G_NO AS gNo,
+			       O_NO as oNo,
+			       DEPTH,
+			       USERS_NO AS USERNO
+			  FROM BOARD
+			 WHERE NO = #{value }
+		]]>
+	</select>
+
+	<insert id="insert" parameterType="boardvo">
+		<![CDATA[
+			insert 
+			  into board 
+ 			values 
+ 			(seq_board.nextval, #{title }, #{content }, sysdate, 0, nvl((select max(g_no) from board), 0) + 1, 1, 0, #{userNo }) 
+ 		]]>
+	</insert>
+
+	<update id="addHit" parameterType="long">
+		<![CDATA[
+			update board
+			   set hit = hit + 1
+			 where no = #{no }
+		]]>
+	</update>
+
+	<update id="update" parameterType="boardvo">
+		<![CDATA[
+			update board
+			   set title = #{title }, content = #{content }
+			 where no = #{no }
+		]]>
+	</update>
+
+	<delete id="delete" parameterType="long">
+		<![CDATA[
+			delete 
+			  from board
+			 where no = #{no }
+		]]>
+	</delete>
+
+	<insert id="replyinsert" parameterType="boardvo">
+		<selectKey keyProperty="rn" resultType="long" order="BEFORE">
+		select seq_board.nextval from dual
+		</selectKey>
+<!-- 		<selectKey keyProperty="no" resultType="long" order="AFTER"> -->
+<!-- 		select #{seq_no } from dual -->
+<!-- 		</selectKey> -->
+		<![CDATA[
+			insert into board
+			(select #{rn }, #{title }, #{content }, sysdate, 0, g_no, o_no+1, depth+1, #{userNo } 
+			   from board
+			  where no = #{no })
+		]]>
+
+	</insert>
+	<update id="replyupdate" parameterType="boardvo">
+		<![CDATA[
+			update board 
+			set o_no = o_no + 1
+			where g_no = #{gNo }
+			and o_no >= #{oNo } + 1
+			and no <> (select max(no) from board b where b.g_no =  #{gNo } and b.o_no = #{oNo } + 1)
+		]]>
+	</update>
+
+
+</mapper>

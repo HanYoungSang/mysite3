@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="guestbook">
+
+	<select id="getList" resultType="guestbookvo">
+		<![CDATA[
+		SELECT NO,
+		       NAME,
+		       CONTENT,
+		       TO_CHAR(REG_DATE,'YYYY-MM-DD HH24:MI:SS') as regDate
+		  FROM GUESTBOOK 
+		 ORDER BY NO DESC
+		 ]]>
+	</select>
+	
+	<select id="getListByPage" resultType="guestbookvo" parameterType="integer">
+		<![CDATA[
+			SELECT *
+			FROM (  SELECT ROWNUM RN, A.*
+			          FROM ( SELECT NO,
+			                        NAME, 
+			                        CONTENT, 
+			                        TO_CHAR(REG_DATE, 'YYYY-MM-DD HH24:MI:SS') AS REGDATE
+			                   FROM GUESTBOOK
+			                  ORDER BY REG_DATE DESC ) A )
+			WHERE (#{page }-1) * 5 + 1 <= RN AND RN <= #{page } * 5
+		 ]]>
+	</select>
+	
+	<select id="getListOne" resultType="guestbookvo">
+		<![CDATA[
+			SELECT *
+			 FROM (  SELECT NO,
+					       NAME,
+					       CONTENT,
+					       TO_CHAR(REG_DATE,'YYYY-MM-DD HH24:MI:SS') AS REGDATE
+					  FROM GUESTBOOK 
+					 ORDER BY NO DESC )
+			WHERE ROWNUM = 1
+		 ]]>
+	</select>
+	
+	<select id="getListByNo" resultType="guestbookvo" parameterType="long">
+		<![CDATA[
+		SELECT NO,
+		       NAME,
+		       CONTENT,
+		       TO_CHAR(REG_DATE,'YYYY-MM-DD')  as regDate
+		  FROM GUESTBOOK 
+		 where no = #{value }
+		 ORDER BY NO DESC
+		 ]]>
+	</select>
+	
+	<insert id="insert" parameterType="guestbookvo">
+		<selectKey keyProperty="no" resultType="long" order="BEFORE">
+			select seq_guestbook.nextval from dual
+		</selectKey>
+		<![CDATA[
+			insert 
+			  into guestbook
+		    values (#{no }, #{name}, #{password}, #{content}, sysdate)
+		   ]]> 
+	</insert>
+	
+	<delete id="delete" parameterType="guestbookvo">
+		<![CDATA[
+		delete from guestbook where no = #{no} and password = #{password}
+		]]>
+	</delete>
+	
+	<update id="update" parameterType="guestbookvo">
+		<![CDATA[
+		update GUESTBOOK 
+		   set name = #{name }, 
+		       content = #{content },
+		       reg_date = sysdate 
+		 where no = #{no }  
+		   and password = #{password }
+		]]>
+	</update>
+		
+</mapper>
+
