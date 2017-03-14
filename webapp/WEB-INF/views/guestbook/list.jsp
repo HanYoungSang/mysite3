@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <% pageContext.setAttribute("newLine", "\n"); %>
 <!doctype html>
@@ -15,7 +16,9 @@
 		<c:import url="/WEB-INF/views/include/header.jsp"></c:import>
 		<div id="content">
 			<div id="guestbook">
-				<form action="${pageContext.request.contextPath}/guestbook/insert" method="post">
+			<form:form
+				modelAttribute="guestbookVo"
+				 action="${pageContext.request.contextPath}/guestbook/insert" method="post">
 					<table>
 						<tr>
 							<td>이름</td><td>
@@ -28,17 +31,29 @@
 										<input type="text" name="name">
 									</c:otherwise>
 								</c:choose>
+								<p style="font-weight:bold; text-align:left;padding:5px 0; color:red">
+									<form:errors path="name" />
+								</p> 
 							</td>
-							<td>비밀번호</td><td><input type="password" name="password"></td>
+							<td>비밀번호</td><td><input type="password" name="password">
+								<p style="font-weight:bold; text-align:left;padding:5px 0; color:red">
+									<form:errors path="password" />
+								</p> </td>
+							
 						</tr>
 						<tr>
-							<td colspan=4><textarea name="content" id="content"></textarea></td>
+							<td colspan=4><textarea name="content" id="content"></textarea>
+								<p style="font-weight:bold; text-align:left;padding:5px 0; color:red">
+									<form:errors path="content" />
+								</p></td>
+							
 						</tr>
 						<tr>
 							<td colspan=4 align=right><input type="submit" VALUE=" 확인 "></td>
 						</tr>
 					</table>
-				</form>
+<%-- 				</form> --%>
+				</form:form>
 				<ul>
 					<li>
 						<c:set var="countList" value="${fn:length(list) }" />

@@ -3,8 +3,8 @@ package com.bit2017.mysite.dto;
 public class JSONResult {
 	private String result ; // success -> 통신 성공
 							// failed -> 통신 실패
-	private static String message;
-	private static Object data;
+	private String message;
+	private Object data;
 	
 	private JSONResult() {}
 	
@@ -17,7 +17,7 @@ public class JSONResult {
 	public static JSONResult success( Object object ){
 		return new JSONResult("success", null, object);
 	}
-	public static JSONResult fail( Object object ){
+	public static JSONResult fail( String message  ){
 		return new JSONResult("fail", message, null);
 	}
 	

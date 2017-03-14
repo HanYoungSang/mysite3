@@ -22,8 +22,8 @@ public class GuestbookService {
 		return guestbookDao.insert(vo);
 	}
 
-	public void delete(Long no, String password) {
-		guestbookDao.delete(no, password);
+	public boolean delete(Long no, String password) {
+		return guestbookDao.delete(no, password);
 		
 	}
 

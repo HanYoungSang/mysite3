@@ -31,7 +31,7 @@
 	<!--
 		com.bit2017.mysite.exception 아래 패키지 로그들만  C:\LogExample\mysite.log 파일과 콘솔로 출력하는 로거
 	-->
-	<logger name="com.bit2017.mysite.exception"  level="debug" additivity="false">
+	<logger name="com.bit2017.jblog.exception"  level="debug" additivity="false">
             <appender-ref ref="fileAppender3" />
 			<appender-ref ref="consoleAppender" />
     </logger>    

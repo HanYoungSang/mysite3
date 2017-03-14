@@ -12,6 +12,9 @@ http://www.springframework.org/schema/context
 http://www.springframework.org/schema/context/spring-context.xsd"
 	xmlns:mvc="http://www.springframework.org/schema/mvc">
 
+
+	<aop:aspectj-autoproxy />
+	
 	<!-- Validator, Conversion Service, Formatter Message Converter 설정 -->
 
 	<mvc:annotation-driven>
@@ -67,13 +70,18 @@ http://www.springframework.org/schema/context/spring-context.xsd"
 	</mvc:interceptors>
 
 	<context:annotation-config />
-	<context:component-scan
-		base-package="com.bit2017.mysite.controller, com.bit2017.mysite.api.controller, com.bit2017.mysite.exception" />
 
+	<context:component-scan
+			base-package="com.bit2017.mysite.controller, com.bit2017.mysite.api.controller, com.bit2017.mysite.exception" />
+	
 	<!-- 서블릿 컨테이너의 디폴트 서블릿 위임 햔들러 -->
 	<mvc:default-servlet-handler />
 	<!-- validator, conversionService, messageConverter를 자동으로 등록 -->
 	<mvc:annotation-driven />
+
+	<!-- the mvc resources tag does the magic -->
+ 	<mvc:resources mapping="/gallery/**" location="file:/upload/" />
+ 
 
 	<!-- 기본 뷰 리졸버 -->
 	<bean id="viewResolver"
@@ -84,6 +92,27 @@ http://www.springframework.org/schema/context/spring-context.xsd"
 		<property name="suffix" value=".jsp" />
 		<property name="order" value="1" />
 	</bean>
-
+	
+	<!-- 6. MessageSource -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>messages/messages_ko</value>
+			</list>
+		</property>
+	</bean>
+	
+	
+	<!-- 멀티파트 리졸버 -->
+	<bean id="multipartResolver" 
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- 최대업로드 가능한 바이트크기 -->
+		<property name="maxUploadSize" value="52428800" />
+		<!-- 디스크에 임시 파일을 생성하기 전에 메모리에 보관할수있는 최대 바이트 크기 -->
+		<!-- property name="maxInMemorySize" value="52428800" /-->
+		<!-- defaultEncoding -->
+		<property name="defaultEncoding" value="utf-8" />
+	</bean>	
 
 </beans>

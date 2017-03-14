@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StopWatch;
 
 import com.bit2017.mysite.vo.GuestbookVo;
 
@@ -16,6 +17,13 @@ public class GuestbookDao {
 	private SqlSession sqlSessions;
 
 	public List<GuestbookVo> getList() {
+//		StopWatch stopWatch = new StopWatch();
+//		stopWatch.start();
+//		
+//		List<GuestbookVo> list = 
+//		
+//		stopWatch.stop();
+//		System.out.println(stopWatch.getTotalTimeMillis());
 		return sqlSessions.selectList("guestbook.getList");
 	}
 	
@@ -46,8 +54,8 @@ public class GuestbookDao {
 	
 	
 	public GuestbookVo getList(Long number) {
-		
 		return sqlSessions.selectOne("guestbook.getListByNo", number);
+		
 	}
 	
 	public boolean modify (GuestbookVo vo){

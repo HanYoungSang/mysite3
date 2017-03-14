@@ -15,10 +15,12 @@
         http://www.springframework.org/schema/task
         http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
+	<aop:aspectj-autoproxy />
+	
 	<context:annotation-config />
 
 	<context:component-scan
-		base-package="com.bit2017.mysite.service, com.bit2017.mysite.repository">
+		base-package="com.bit2017.mysite.service, com.bit2017.mysite.repository, com.bit2017.mysite.aspect">
 		<context:include-filter type="annotation"
 			expression="org.springframework.stereotype.Repository" />
 		<context:include-filter type="annotation"

@@ -1,7 +1,5 @@
 package com.bit2017.mysite.security;
 
-import java.lang.reflect.Parameter;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -13,7 +11,6 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.bit2017.mysite.vo.UserVo;
-import com.mysql.fabric.xmlrpc.base.Param;
 
 public class AuthUserHandlerMethodArgumentResolver
 		implements

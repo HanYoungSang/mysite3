@@ -2,9 +2,12 @@ package com.bit2017.mysite.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +37,12 @@ public class GuestbookController {
 	}
 	
 	@RequestMapping("/insert")
-	public String add(@ModelAttribute GuestbookVo vo){
+	public String add(	@ModelAttribute @Valid GuestbookVo vo,
+						BindingResult result){
+		if(result.hasErrors()) {
+		       
+		       return "/guestbook/list";
+		}
 		guestbookService.insert(vo);
 		return "redirect:/guestbook/";
 	}
